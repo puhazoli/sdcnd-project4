@@ -1,19 +1,10 @@
-## Advanced Lane Finding
-[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
+## Project - Advanced Lane finding
 
+### This is my writeup for the advanced lane finding project. I think so far this was the hardest challenge, but I enjoyed working on this problem.
 
-In this project, your goal is to write a software pipeline to identify the lane boundaries in a video, but the main output or product we want you to create is a detailed writeup of the project.  Check out the [writeup template](https://github.com/udacity/CarND-Advanced-Lane-Lines/blob/master/writeup_template.md) for this project and use it as a starting point for creating your own writeup.  
-
-Creating a great writeup:
 ---
-A great writeup should include the rubric points as well as your description of how you addressed each point.  You should include a detailed description of the code used in each step (with line-number references and code snippets where necessary), and links to other supporting documents or external references.  You should include images in your writeup to demonstrate how your code works with examples.  
 
-All that said, please be concise!  We're not looking for you to write a book here, just a brief description of how you passed each rubric point, and references to the relevant code :). 
-
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup.
-
-The Project
----
+**Advanced Lane Finding Project**
 
 The goals / steps of this project are the following:
 
@@ -26,14 +17,67 @@ The goals / steps of this project are the following:
 * Warp the detected lane boundaries back onto the original image.
 * Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
 
-The images for camera calibration are stored in the folder called `camera_cal`.  The images in `test_images` are for testing your pipeline on single frames.  If you want to extract more test images from the videos, you can simply use an image writing method like `cv2.imwrite()`, i.e., you can read the video in frame by frame as usual, and for frames you want to save for later you can write to an image file.  
+[//]: # (Image References)
+[Test Image](./test_images/test5.jpg)
 
-To help the reviewer examine your work, please save examples of the output from each stage of your pipeline in the folder called `ouput_images`, and include a description in your writeup for the project of what each image shows.    The video called `project_video.mp4` is the video your pipeline should work well on.  
+### The rubric points: 
 
-The `challenge_video.mp4` video is an extra (and optional) challenge for you if you want to test your pipeline under somewhat trickier conditions.  The `harder_challenge.mp4` video is another optional challenge and is brutal!
+---
+Throughout the document I will refer to this [test Image](./test_images/test5.jpg). I applied the transformations to this image, so they are nicely represented. 
 
-If you're feeling ambitious (again, totally optional though), don't stop there!  We encourage you to go out and take video of your own, calibrate your camera and show us how you would implement this project from scratch!
+### Camera Calibration
 
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
+#### 1. I used the opencv function to compute the picture distortion matrix. I have included pictures of the distorted images in the [ipython notebook](./solutions/solution.ipynb). I used the methods taught during the class, such as `cv2.calibrateCamera()` and then undistorted the image with `cv2.undistort()`. You can see here the [undistorted Image](./output_images/undistorted.jpg).
 
+### Pipeline (single images)
+
+#### 2. Thresholding
+
+I have tried out different thresholding techniques, but in the end I used S and L color channels. I found L color channel (from LUV color space), to be really good for this task, however it missed the right line a couple of times, that is why I kept in the S channel, which was a bit more noisier.You can see the different pictures, also the combined output of them. 
+
+[Sobel threshold](./output_images/abs_sobel_mag.jpg)
+[HLS with S channel](./output_images/s_channel_binary.jpg)
+[L channel from LUV](./output_images/l_binary.jpg)
+[Combined S and L](./output_images/combined_binary.jpg)
+
+#### 3. Warping
+
+I usedopencv's warp function to create the birds eye view. I have experimented a lot with the different source and destination points, however I am quite happy with the result. I also checked warping back the image, it worked well. You can see the 4 source points in the notebook and the [birds eye warped](./output_images/birds.jpg) image here. 
+
+
+#### 4. (also 6.) Lane identifing 
+
+I used the code from class as basis, but modified a lot to be able to work with the video. I searched around the max of the histogram with the window method in the beginning and when the pipeline lost track of a line, however used the mean of the previous 10 iterations when the line was sucessfully founded beforehand. This helped the video to perform better, as sometimes the histogram didn't report on the lane, but rather on some other stuff. If there was no line found by the polynomial fit, I used the average of the previous fits. This gave me slightly worse results overall, as with this approach the adjusting of the lines were little slower, however it also helped in recovering the lines.
+
+I built in several regulariziers, so any outlying result (base point or coefficient that were bigger than the previous ones by a threshold) would  be discarded. I also always kept the last 10 good results for the base points and coefficients of the polynomial and used the average over them to overcome really jumping lines. I have also masked one part of the picture so the polynomials coming from the image were ready to be used, even if I had two different instances for the left and the right part of the lane.
+
+
+[Left line before pipeline](./output_images/leftline.jpg)
+[Rightline before pipeline](./output_images/rightline.jpg)
+[Result from pipeline](./output_images/result.jpg)
+
+![alt text][image5]
+
+#### 5. Radius
+
+I used the method from the class. It can be seen in the ipython notebook.
+
+
+---
+
+### Pipeline (video)
+
+#### 1. [Video of the final project](./output_images/proj_video_o.mp4)
+
+
+---
+
+### Discussion
+
+#### 1. Performance on challenge videos
+
+I checked, and on the harder challenge the pipeline did better, however the normal challenge didn't perform that well. It is because  of the starting values, but changing them should solve the problem. 
+
+The speed of the pipeline could be made better with some refactoring and abstractions in the code.
+
+The binaryoutput of the image transformation is also sometimes little too noisy, so that could be improved.
