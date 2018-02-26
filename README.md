@@ -24,7 +24,7 @@ Throughout the document I will refer to this ![test Image](./test_images/test5.j
 
 ### Camera Calibration
 
-#### 1. I used the opencv function to compute the picture distortion matrix. I have included pictures of the distorted images in the [ipython notebook](./solutions/solution.ipynb). I used the methods taught during the class, such as `cv2.calibrateCamera()` and then undistorted the image with `cv2.undistort()`. You can see here the [undistorted Image](./output_images/undistorted.jpg).
+#### 1. I used the opencv function to compute the picture distortion matrix. I have included pictures of the distorted images in the [ipython notebook](./solutions/solution.ipynb). I used the methods taught during the class, such as `cv2.calibrateCamera()` and then undistorted the image with `cv2.undistort()`. You can see here the ![undistorted Image](./output_images/undistorted.jpg).
 
 ### Pipeline (single images)
 
