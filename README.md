@@ -17,13 +17,10 @@ The goals / steps of this project are the following:
 * Warp the detected lane boundaries back onto the original image.
 * Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
 
-[//]: # (Image References)
-[Test Image](./test_images/test5.jpg)
-
 ### The rubric points: 
 
 ---
-Throughout the document I will refer to this [test Image](./test_images/test5.jpg). I applied the transformations to this image, so they are nicely represented. 
+Throughout the document I will refer to this ![test Image](./test_images/test5.jpg). I applied the transformations to this image, so they are nicely represented. 
 
 ### Camera Calibration
 
@@ -35,14 +32,14 @@ Throughout the document I will refer to this [test Image](./test_images/test5.jp
 
 I have tried out different thresholding techniques, but in the end I used S and L color channels. I found L color channel (from LUV color space), to be really good for this task, however it missed the right line a couple of times, that is why I kept in the S channel, which was a bit more noisier.You can see the different pictures, also the combined output of them. 
 
-[Sobel threshold](./output_images/abs_sobel_mag.jpg)
-[HLS with S channel](./output_images/s_channel_binary.jpg)
-[L channel from LUV](./output_images/l_binary.jpg)
-[Combined S and L](./output_images/combined_binary.jpg)
+![Sobel threshold](./output_images/abs_sobel_mag.jpg)
+![HLS with S channel](./output_images/s_channel_binary.jpg)
+![L channel from LUV](./output_images/l_binary.jpg)
+![Combined S and L](./output_images/combined_binary.jpg)
 
 #### 3. Warping
 
-I usedopencv's warp function to create the birds eye view. I have experimented a lot with the different source and destination points, however I am quite happy with the result. I also checked warping back the image, it worked well. You can see the 4 source points in the notebook and the [birds eye warped](./output_images/birds.jpg) image here. 
+I used opencv's warp function to create the birds eye view. I have experimented a lot with the different source and destination points, however I am quite happy with the result. I also checked warping back the image, it worked well. You can see the 4 source points in the notebook and the ![birds eye warped](./output_images/birds.jpg) image here. 
 
 
 #### 4. (also 6.) Lane identifing 
@@ -52,16 +49,13 @@ I used the code from class as basis, but modified a lot to be able to work with 
 I built in several regulariziers, so any outlying result (base point or coefficient that were bigger than the previous ones by a threshold) would  be discarded. I also always kept the last 10 good results for the base points and coefficients of the polynomial and used the average over them to overcome really jumping lines. I have also masked one part of the picture so the polynomials coming from the image were ready to be used, even if I had two different instances for the left and the right part of the lane.
 
 
-[Left line before pipeline](./output_images/leftline.jpg)
-[Rightline before pipeline](./output_images/rightline.jpg)
-[Result from pipeline](./output_images/result.jpg)
-
-![alt text][image5]
+![Left line before pipeline](./output_images/leftline.jpg)
+![Right line before pipeline](./output_images/rightline.jpg)
+![Result from pipeline](./output_images/result.jpg)
 
 #### 5. Radius
 
 I used the method from the class. It can be seen in the ipython notebook.
-
 
 ---
 
